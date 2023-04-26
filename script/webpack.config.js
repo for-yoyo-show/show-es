@@ -4,8 +4,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-const distPath = path.resolve(__dirname, '../dist');
-const staticPath = path.resolve(__dirname, '../public');
+const targetDir = 'dist';
+const staticDir = 'public';
+const distPath = path.resolve(__dirname, '../', targetDir);
 
 module.exports = {
   entry: './src/index.tsx',
@@ -75,21 +76,20 @@ module.exports = {
     static: distPath,
     historyApiFallback: true,
     compress: false,
-    http2: true
+    server: 'spdy'
   },
   plugins: [
     new ESLintPlugin(),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, '../index.html'),
-      filename: 'index.html'
+      template: path.resolve(__dirname, '../index.html')
     }),
     new CopyWebpackPlugin({
       patterns: [
         {
           // 从public中复制文件
-          from: staticPath,
+          from: path.resolve(__dirname, '../', staticDir),
           // 把复制的文件存放到dis里面
-          to: path.resolve(__dirname, '../dist/public')
+          to: path.resolve(__dirname, '../', targetDir, staticDir)
         }
       ]
     }),
