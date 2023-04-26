@@ -1,15 +1,21 @@
-import React, { Component } from "react";
-import { DatePicker } from "antd";
-import "antd/dist/reset.css";
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+import store from './store/store';
+import Router from './router/router';
+import 'antd/dist/reset.css';
+import './App.css';
 
 class App extends Component {
   render() {
     return (
-      <div>
-        <h1> Hello, World! 111</h1>
-        <DatePicker/>
+      <div className="app">
+        <Provider store={store}>
+          <React.StrictMode>
+            <Router />
+          </React.StrictMode>
+        </Provider>
       </div>
-    )
+    );
   }
 }
 
