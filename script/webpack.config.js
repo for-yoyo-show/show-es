@@ -44,17 +44,6 @@ module.exports = {
         }
       },
       {
-        test: /\.worker\.(j|t)s$/,
-        use: {
-          loader: 'worker-loader',
-          options: {
-            esModule: true,
-            // filename: '[name]:[hash:8].js', // 打包后chunk的名称
-            inline: 'fallback' // 开启内联模式,免得爆缺少标签或者跨域的错误
-          }
-        }
-      },
-      {
         test: /\.(css|less)$/,
         use: [
           {

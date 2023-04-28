@@ -1,5 +1,5 @@
 import { init } from './utils/shared-orbitcontrols';
-import RenderWorker from './render.worker';
+const RenderWorker = new Worker(new URL('./render.worker', import.meta.url));
 
 const mouseEventHandler = makeSendPropertiesHandler([
   'ctrlKey',
@@ -110,7 +110,7 @@ class ElementProxy {
 function startWorker(canvas) {
   canvas.focus();
   const offscreen = canvas.transferControlToOffscreen();
-  const worker = new RenderWorker('./', {
+  const worker = new Worker(new URL('./render.worker', import.meta.url), {
     type: 'module'
   });
 
