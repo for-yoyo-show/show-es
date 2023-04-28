@@ -2,17 +2,10 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { DatePicker } from 'antd';
 
+import Home from '../views/Home';
+
 const About = () => {
   return <>About</>;
-};
-
-const Home = () => {
-  return (
-    <div>
-      <h1> Hello, World! 111</h1>
-      <DatePicker />
-    </div>
-  );
 };
 
 const router = createBrowserRouter([

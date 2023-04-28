@@ -9,7 +9,10 @@ const staticDir = 'public';
 const distPath = path.resolve(__dirname, '../', targetDir);
 
 module.exports = {
-  entry: './src/index.tsx',
+  entry: {
+    home: './src/index.tsx'
+    // shared: ['react', 'react-dom', 'redux', 'react-redux']
+  },
   mode: 'development',
   module: {
     rules: [
@@ -37,6 +40,17 @@ module.exports = {
             ],
             // 使用transform-runtime，避免全局污染，注入helper
             plugins: ['@babel/plugin-transform-runtime']
+          }
+        }
+      },
+      {
+        test: /\.worker\.(j|t)s$/,
+        use: {
+          loader: 'worker-loader',
+          options: {
+            esModule: true,
+            // filename: '[name]:[hash:8].js', // 打包后chunk的名称
+            inline: 'fallback' // 开启内联模式,免得爆缺少标签或者跨域的错误
           }
         }
       },
@@ -78,6 +92,7 @@ module.exports = {
     compress: false,
     server: 'spdy'
   },
+  devtool: 'source-map',
   plugins: [
     new ESLintPlugin(),
     new HtmlWebpackPlugin({
