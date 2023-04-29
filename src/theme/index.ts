@@ -5,7 +5,7 @@ const ThemeId = 'theme';
 function loadStyle(theme) {
   let link = document.getElementById(ThemeId) as HTMLLinkElement;
   if (link) {
-    link.setAttribute('href', `${theme}theme.${hash}.css`);
+    link.setAttribute('href', `${theme}.${hash}.css`);
   } else {
     link = document.createElement('link');
     link.id = ThemeId;
