@@ -3,17 +3,68 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
+const devMode = process.env.NODE_ENV !== 'production';
 const targetDir = 'dist';
 const staticDir = 'public';
 const distPath = path.resolve(__dirname, '../', targetDir);
 
+const themesEntry = {
+  dark: './src/theme/dark/index.scss',
+  light: './src/theme/light/index.scss'
+};
+
 module.exports = {
-  entry: {
-    home: './src/index.tsx'
-    // shared: ['react', 'react-dom', 'redux', 'react-redux']
+  mode: devMode ? 'development' : 'production',
+  devtool: devMode ? 'eval' : 'source-map',
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, '../src')
+    }
   },
-  mode: 'development',
+  entry: {
+    app: {
+      import: './src/index.tsx',
+      dependOn: ['antd', 'reactvendors', 'three']
+    },
+    antd: {
+      import: 'antd',
+      dependOn: 'reactvendors'
+    },
+    reactvendors: {
+      import: ['react', 'react-dom', 'redux', '@reduxjs/toolkit', 'react-router-dom'],
+      runtime: 'runtime'
+    },
+    three: 'three',
+    ...themesEntry
+  },
+  optimization: {
+    runtimeChunk: 'single',
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        fooStyles: {
+          type: 'css/mini-extract',
+          name: 'styles_foo',
+          chunks: chunk => {
+            return chunk.name === 'foo';
+          },
+          enforce: true
+        },
+        barStyles: {
+          type: 'css/mini-extract',
+          name: 'styles_bar',
+          chunks: chunk => {
+            return chunk.name === 'bar';
+          },
+          enforce: true
+        }
+      }
+    },
+    minimizer: [devMode ? null : new CssMinimizerPlugin()].filter(m => m !== null)
+  },
   module: {
     rules: [
       {
@@ -44,20 +95,13 @@ module.exports = {
         }
       },
       {
-        test: /\.(css|less)$/,
+        test: /\.(css|scss)$/,
         use: [
           {
-            loader: 'style-loader'
+            loader: MiniCssExtractPlugin.loader
           },
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1
-            }
-          },
-          {
-            loader: 'less-loader'
-          }
+          'css-loader',
+          'sass-loader'
         ]
       },
       {
@@ -73,19 +117,21 @@ module.exports = {
   resolve: { extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'] },
   output: {
     path: distPath,
-    filename: 'bundle.js'
+    filename: '[name].bundle.js'
   },
+  target: ['web', 'es2020'],
   devServer: {
     static: distPath,
     historyApiFallback: true,
     compress: false,
     server: 'spdy'
   },
-  devtool: 'source-map',
   plugins: [
     new ESLintPlugin(),
+    new MiniCssExtractPlugin({ filename: '[name].[fullhash].css', chunkFilename: '[id].[contenthash].css' }),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, '../index.html')
+      template: path.resolve(__dirname, '../index.html'),
+      chunks: ['app', 'antd', 'reactvendors', 'three']
     }),
     new CopyWebpackPlugin({
       patterns: [
