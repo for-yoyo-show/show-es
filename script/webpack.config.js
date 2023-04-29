@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const devMode = process.env.NODE_ENV !== 'production';
 const targetDir = 'dist';
@@ -63,7 +64,8 @@ module.exports = {
         }
       }
     },
-    minimizer: [devMode ? null : new CssMinimizerPlugin()].filter(m => m !== null)
+    minimize: !devMode,
+    minimizer: [...(devMode ? [] : [new CssMinimizerPlugin(), new TerserPlugin()])]
   },
   module: {
     rules: [
@@ -136,9 +138,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          // 从public中复制文件
           from: path.resolve(__dirname, '../', staticDir),
-          // 把复制的文件存放到dis里面
           to: path.resolve(__dirname, '../', targetDir, staticDir)
         }
       ]
