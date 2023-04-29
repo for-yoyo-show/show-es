@@ -3,7 +3,7 @@ const hash = __webpack_hash__;
 const ThemeId = 'theme';
 
 function loadStyle(theme) {
-  let link = document.querySelector(ThemeId) as HTMLLinkElement;
+  let link = document.getElementById(ThemeId) as HTMLLinkElement;
   if (link) {
     link.setAttribute('href', `${theme}theme.${hash}.css`);
   } else {
