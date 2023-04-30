@@ -17,13 +17,16 @@ const themesEntry = {
   light: './src/theme/light/index.scss'
 };
 
-module.exports = {
+const webpackConfig = {
   mode: devMode ? 'development' : 'production',
-  devtool: devMode ? 'eval' : 'source-map',
+  devtool: devMode ? 'eval' : 'nosources-source-map',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, '../src')
-    }
+    },
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.*'],
+    mainFiles: ['index'],
+    mainFields: ['browser', 'module', 'main']
   },
   entry: {
     app: {
@@ -68,6 +71,7 @@ module.exports = {
     minimizer: [...(devMode ? [] : [new CssMinimizerPlugin(), new TerserPlugin()])]
   },
   module: {
+    noParse: /^jquery|^lodash|^three/,
     rules: [
       {
         test: /\.(j|t)sx?$/,
@@ -94,6 +98,21 @@ module.exports = {
             // 使用transform-runtime，避免全局污染，注入helper
             plugins: ['@babel/plugin-transform-runtime']
           }
+        },
+        parser: {
+          amd: false, // 禁用 AMD
+          commonjs: false, // 禁用 CommonJS
+          system: false, // 禁用 SystemJS
+          // harmony: false, // 禁用 ES2015 Harmony import/export
+          requireInclude: false, // 禁用 require.include
+          requireEnsure: false, // 禁用 require.ensure
+          requireContext: false, // 禁用 require.context
+          browserify: false, // 禁用特殊处理的 browserify bundle
+          requireJs: false, // 禁用 requirejs.*
+          node: false, // 禁用 __dirname, __filename, module, require.extensions, require.main, 等。
+          commonjsMagicComments: false, // 禁用对 CommonJS 的  magic comments 支持
+          node: {}, // 在模块级别(module level)上重新配置 node 层(layer)
+          worker: ['default from web-worker', '...']
         }
       },
       {
@@ -103,6 +122,7 @@ module.exports = {
             loader: MiniCssExtractPlugin.loader
           },
           'css-loader',
+          'postcss-loader',
           'sass-loader'
         ]
       },
@@ -116,10 +136,10 @@ module.exports = {
       }
     ]
   },
-  resolve: { extensions: ['.*', '.js', '.jsx', '.ts', '.tsx'] },
   output: {
     path: distPath,
-    filename: '[name].bundle.js'
+    filename: '[name].[chunkhash].bundle.js',
+    chunkFilename: '[name].[chunkhash].chunk.js'
   },
   target: ['web', 'es2020'],
   devServer: {
@@ -129,8 +149,8 @@ module.exports = {
     server: 'spdy'
   },
   plugins: [
+    new MiniCssExtractPlugin({ filename: '[name].[fullhash].css', chunkFilename: '[name].[id].[chunkhash].css' }),
     new ESLintPlugin(),
-    new MiniCssExtractPlugin({ filename: '[name].[fullhash].css', chunkFilename: '[id].[contenthash].css' }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, '../index.html'),
       chunks: ['app', 'antd', 'reactvendors', 'three']
@@ -146,3 +166,5 @@ module.exports = {
     new CleanWebpackPlugin()
   ]
 };
+
+module.exports = webpackConfig;
