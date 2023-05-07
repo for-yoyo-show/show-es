@@ -71,7 +71,7 @@ const webpackConfig = {
           // harmony: false, // 禁用 ES2015 Harmony import/export
           requireInclude: false, // 禁用 require.include
           requireEnsure: false, // 禁用 require.ensure
-          requireContext: false, // 禁用 require.context
+          requireContext: true, // 禁用 require.context
           browserify: false, // 禁用特殊处理的 browserify bundle
           requireJs: false, // 禁用 requirejs.*
           node: false, // 禁用 __dirname, __filename, module, require.extensions, require.main, 等。
