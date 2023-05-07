@@ -1,6 +1,9 @@
 const hash = __webpack_hash__;
 const ThemeId = 'theme';
 
+/**
+ * @param theme 'dark' | 'light'
+ */
 function loadStyle(theme) {
   let link = document.getElementById(ThemeId) as HTMLLinkElement;
   if (link) {

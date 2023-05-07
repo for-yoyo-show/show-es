@@ -1,6 +1,5 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { DatePicker } from 'antd';
 
 import Home from '../views/Home';
 
