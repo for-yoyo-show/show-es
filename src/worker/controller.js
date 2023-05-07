@@ -1,5 +1,5 @@
-import { init } from './utils/shared-orbitcontrols';
-const RenderWorker = new Worker(new URL('./render.worker', import.meta.url));
+/* eslint-disable @typescript-eslint/no-empty-function */
+import { createRenderer, create2dRenderer, importScence } from './utils/shared-orbitcontrols';
 
 const mouseEventHandler = makeSendPropertiesHandler([
   'ctrlKey',
@@ -141,7 +141,7 @@ function startWorker(canvas) {
 }
 
 function startMainPage(canvas) {
-  init({ canvas, inputElement: canvas });
+  createRenderer({ canvas, inputElement: canvas });
   console.log('using regular canvas'); /* eslint-disable-line no-console */
 }
 
@@ -149,6 +149,7 @@ function startMainPage(canvas) {
  *
  * @param {HTMLCanvasElement} canvas
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function start(canvas) {
   /* eslint consistent-return: 0 */
   if (canvas.transferControlToOffscreen) {
@@ -159,4 +160,31 @@ function start(canvas) {
   return {};
 }
 
-export default start;
+// 非离屏渲染
+class CanvasController {
+  canvas2dRender;
+  canvas3dRender;
+  canvasRender;
+  /**
+   * @param {HTMLCanvasElement} canvas2d
+   * @param {HTMLCanvasElement} canvas3d
+   */
+  constructor(canvas2d, canvas3d) {
+    this.canvas2dRender = create2dRenderer({ canvas: canvas2d, inputElement: canvas2d });
+    this.canvas3dRender = createRenderer({ canvas: canvas3d, inputElement: canvas3d });
+  }
+
+  async setShowCreator(scenceName) {
+    const showCreator = (await importScence(scenceName)).default;
+    this.canvasRender = showCreator.canvasType === '2d' ? this.canvas2dRender : this.canvas3dRender;
+    await this.canvasRender.setShowCreator(showCreator);
+    this.canvasRender.startRender();
+    return showCreator.canvasType === '2d' ? '2d' : '3d';
+  }
+
+  stopRender() {
+    this.canvasRender?.stopRender();
+  }
+}
+
+export default CanvasController;

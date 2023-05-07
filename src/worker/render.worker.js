@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { init } from './utils/shared-orbitcontrols';
+import { create2dRenderer } from './utils/shared-orbitcontrols';
 import { EventDispatcher } from 'three';
 
 function noop() {}
@@ -71,7 +71,7 @@ function start(data) {
   const proxy = proxyManager.getProxy(data.canvasId);
   proxy.ownerDocument = proxy; // HACK!
   self.document = {}; // HACK!
-  init({
+  create2dRenderer({
     canvas: data.canvas,
     inputElement: proxy
   });
