@@ -2,24 +2,16 @@ const path = require('path');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { merge } = require('webpack-merge');
+const themeWebpackConfig = require('./webpack.theme.config');
 
-const devMode = process.env.NODE_ENV !== 'production';
 const targetDir = 'dist';
 const staticDir = 'public';
 const distPath = path.resolve(__dirname, '../', targetDir);
 
-const themesEntry = {
-  dark: './src/theme/dark/index.scss',
-  light: './src/theme/light/index.scss'
-};
-
 const webpackConfig = {
-  mode: devMode ? 'development' : 'production',
-  devtool: devMode ? 'eval' : 'nosources-source-map',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, '../src')
@@ -41,34 +33,7 @@ const webpackConfig = {
       import: ['react', 'react-dom', 'redux', '@reduxjs/toolkit', 'react-router-dom'],
       runtime: 'runtime'
     },
-    three: 'three',
-    ...themesEntry
-  },
-  optimization: {
-    runtimeChunk: 'single',
-    splitChunks: {
-      chunks: 'all',
-      cacheGroups: {
-        fooStyles: {
-          type: 'css/mini-extract',
-          name: 'styles_foo',
-          chunks: chunk => {
-            return chunk.name === 'foo';
-          },
-          enforce: true
-        },
-        barStyles: {
-          type: 'css/mini-extract',
-          name: 'styles_bar',
-          chunks: chunk => {
-            return chunk.name === 'bar';
-          },
-          enforce: true
-        }
-      }
-    },
-    minimize: !devMode,
-    minimizer: [...(devMode ? [] : [new CssMinimizerPlugin(), new TerserPlugin()])]
+    three: 'three'
   },
   module: {
     noParse: /^jquery|^lodash|^three/,
@@ -142,14 +107,7 @@ const webpackConfig = {
     chunkFilename: '[name].[chunkhash].chunk.js'
   },
   target: ['web', 'es2020'],
-  devServer: {
-    static: distPath,
-    historyApiFallback: true,
-    compress: false,
-    server: 'spdy'
-  },
   plugins: [
-    new MiniCssExtractPlugin({ filename: '[name].[fullhash].css', chunkFilename: '[name].[id].[chunkhash].css' }),
     new ESLintPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, '../index.html'),
@@ -164,7 +122,31 @@ const webpackConfig = {
       ]
     }),
     new CleanWebpackPlugin()
-  ]
+  ],
+  optimization: {
+    runtimeChunk: 'single',
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        fooStyles: {
+          type: 'css/mini-extract',
+          name: 'styles_foo',
+          chunks: chunk => {
+            return chunk.name === 'foo';
+          },
+          enforce: true
+        },
+        barStyles: {
+          type: 'css/mini-extract',
+          name: 'styles_bar',
+          chunks: chunk => {
+            return chunk.name === 'bar';
+          },
+          enforce: true
+        }
+      }
+    }
+  }
 };
 
-module.exports = webpackConfig;
+module.exports = { webpackConfig: merge(themeWebpackConfig, webpackConfig), targetDir, staticDir, distPath };
