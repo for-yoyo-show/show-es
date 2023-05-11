@@ -97,6 +97,7 @@ class ElementProxy {
         type: 'size',
         left: rect.left,
         top: rect.top,
+        devicePixelRatio: window.devicePixelRatio,
         width: element.clientWidth,
         height: element.clientHeight
       });
@@ -140,26 +141,6 @@ function startWorker(canvas) {
   console.log('using OffscreenCanvas'); /* eslint-disable-line no-console */
 }
 
-function startMainPage(canvas) {
-  createRenderer({ canvas, inputElement: canvas });
-  console.log('using regular canvas'); /* eslint-disable-line no-console */
-}
-
-/**
- *
- * @param {HTMLCanvasElement} canvas
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function start(canvas) {
-  /* eslint consistent-return: 0 */
-  if (canvas.transferControlToOffscreen) {
-    startWorker(canvas);
-  } else {
-    startMainPage(canvas);
-  }
-  return {};
-}
-
 // 非离屏渲染
 class CanvasController {
   canvas2dRender;
@@ -187,4 +168,89 @@ class CanvasController {
   }
 }
 
-export default CanvasController;
+// 离屏渲染
+class CanvasController2 {
+  canvas2dRender;
+  canvas3dRender;
+  canvasRender;
+  worker;
+  setShowCreatorCallBack;
+
+  /**
+   * @param {HTMLCanvasElement} canvas2d
+   * @param {HTMLCanvasElement} canvas3d
+   */
+  constructor(canvas2d, canvas3d) {
+    console.log('use worker!!');
+    canvas2d.focus();
+    canvas3d.focus();
+    const worker = new Worker(new URL('./render.worker', import.meta.url), {
+      type: 'module'
+    });
+    worker.onmessage = event => {
+      const { data } = event;
+      if (data.type === 'setShowCreator') {
+        this.setShowCreatorCallBack(data);
+      }
+    };
+    worker.onerror = function (event) {
+      console.error(event);
+    };
+    this.worker = worker;
+    const eventHandlers = {
+      contextmenu: preventDefaultHandler,
+      mousedown: mouseEventHandler,
+      mousemove: mouseEventHandler,
+      mouseup: mouseEventHandler,
+      pointerdown: mouseEventHandler,
+      pointermove: mouseEventHandler,
+      pointerup: mouseEventHandler,
+      touchstart: touchEventHandler,
+      touchmove: touchEventHandler,
+      touchend: touchEventHandler,
+      wheel: wheelEventHandler,
+      keydown: filteredKeydownEventHandler
+    };
+
+    const offscreen2d = canvas2d.transferControlToOffscreen();
+    const proxy2d = new ElementProxy(canvas2d, worker, eventHandlers);
+
+    const offscreen3d = canvas3d.transferControlToOffscreen();
+    const proxy3d = new ElementProxy(canvas3d, worker, eventHandlers);
+
+    worker.postMessage(
+      {
+        type: 'init',
+        canvas2d: {
+          canvas: offscreen2d,
+          canvasId: proxy2d.id
+        },
+        canvas3d: {
+          canvas: offscreen3d,
+          canvasId: proxy3d.id
+        }
+      },
+      [offscreen2d, offscreen3d]
+    );
+  }
+
+  async setShowCreator(scenceName) {
+    return new Promise(resolve => {
+      this.worker?.postMessage({
+        type: 'setShowCreator',
+        scenceName
+      });
+      this.setShowCreatorCallBack = data => {
+        resolve(data.canvasType);
+      };
+    });
+  }
+
+  async stopRender() {
+    this.worker?.postMessage({
+      type: 'stopRender'
+    });
+  }
+}
+
+export default CanvasController2;

@@ -10,7 +10,7 @@ export const isBasicType = obj => !(typeof obj === 'object' || typeof obj === 'f
 
 function resizeRendererToDisplaySize(renderer, inputElement) {
   const canvas = renderer.domElement;
-  const pixelRatio = window.devicePixelRatio;
+  const pixelRatio = self?.devicePixelRatio || 1;
   const width = (inputElement.clientWidth * pixelRatio) | 0;
   const height = (inputElement.clientHeight * pixelRatio) | 0;
   const needResize = canvas.width !== width || canvas.height !== height;
@@ -22,13 +22,13 @@ function resizeRendererToDisplaySize(renderer, inputElement) {
 }
 
 function resizeRendererToDisplaySize2d(canvas, inputElement) {
-  const pixelRatio = window.devicePixelRatio;
+  const pixelRatio = self?.devicePixelRatio || 1;
   const width = (inputElement.clientWidth * pixelRatio) | 0;
   const height = (inputElement.clientHeight * pixelRatio) | 0;
   const needResize = canvas.width !== width || canvas.height !== height;
   if (needResize) {
-    canvas.setAttribute('width', width);
-    canvas.setAttribute('height', height);
+    canvas.width = width;
+    canvas.height = height;
   }
 
   return needResize;
@@ -37,7 +37,6 @@ function resizeRendererToDisplaySize2d(canvas, inputElement) {
 export const createRenderer = ({ canvas, inputElement } = {}) => {
   // 设置渲染器
   const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
-  // renderer.domElement = inputElement // TODO 验证
 
   const state = {
     scene: null,
@@ -58,7 +57,7 @@ export const createRenderer = ({ canvas, inputElement } = {}) => {
       state.camera.aspect = canvas.clientWidth / canvas.clientHeight;
       state.camera.updateProjectionMatrix();
     }
-
+    console.log('render');
     renderer.render(state.scene, state.camera);
   };
 
@@ -90,7 +89,7 @@ export const createRenderer = ({ canvas, inputElement } = {}) => {
       start = () => {},
       end = () => {},
       ui
-    } = await showCreator({ canvas: state.canvas, renderer: renderer, render });
+    } = await showCreator({ canvas: state.canvas, renderer: renderer, render, inputElement });
     state.scene = scene;
     state.camera = camera;
     state.update = update;
@@ -167,7 +166,6 @@ export const create2dRenderer = ({ canvas, inputElement } = {}) => {
 
   const stopRender = () => {
     state.running = false;
-    window.removeEventListener('resize', render);
     end();
   };
 
@@ -175,7 +173,6 @@ export const create2dRenderer = ({ canvas, inputElement } = {}) => {
     state.running = true;
     start();
     render();
-    window.addEventListener('resize', render);
     update();
   };
 

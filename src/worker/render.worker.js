@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { create2dRenderer } from './utils/shared-orbitcontrols';
 import { EventDispatcher } from 'three';
+import { createRenderer, create2dRenderer, importScence } from './utils/shared-orbitcontrols';
 
 function noop() {}
 
@@ -35,6 +35,9 @@ class ElementProxyReceiver extends EventDispatcher {
       this.top = data.top;
       this.width = data.width;
       this.height = data.height;
+      self.devicePixelRatio = data.devicePixelRatio;
+
+      this.dispatchEvent(data);
       return;
     }
 
@@ -67,22 +70,68 @@ class ProxyManager {
 
 const proxyManager = new ProxyManager();
 
-function start(data) {
-  const proxy = proxyManager.getProxy(data.canvasId);
-  proxy.ownerDocument = proxy; // HACK!
+const state = {
+  render2d: null,
+  canvas2d: null,
+  canvas2dProxy: null,
+  render3d: null,
+  canvas3d: null,
+  canvas3dProxy: null,
+  render: null
+};
+
+async function init({ canvas2d, canvas3d }) {
   self.document = {}; // HACK!
-  create2dRenderer({
-    canvas: data.canvas,
-    inputElement: proxy
+  {
+    const proxy = proxyManager.getProxy(canvas2d.canvasId);
+    proxy.ownerDocument = proxy; // HACK!
+    state.canvas2d = canvas2d.canvas;
+    state.canvas2dProxy = proxy;
+  }
+  {
+    const proxy = proxyManager.getProxy(canvas3d.canvasId);
+    proxy.ownerDocument = proxy; // HACK!
+    state.canvas3d = canvas3d.canvas;
+    state.canvas3dProxy = proxy;
+  }
+  state.render2d = create2dRenderer({
+    canvas: state.canvas2d,
+    inputElement: state.canvas2dProxy
+  });
+  state.render3d = createRenderer({
+    canvas: state.canvas3d,
+    inputElement: state.canvas3dProxy
   });
 }
+
+const setShowCreator = async ({ scenceName }) => {
+  const showCreator = (await importScence(scenceName)).default;
+
+  state.render = showCreator.canvasType === '2d' ? state.render2d : state.render3d;
+  await state.render.setShowCreator(showCreator);
+  state.render.startRender();
+  self.postMessage({
+    type: 'setShowCreator',
+    canvasType: showCreator.canvasType === '2d' ? '2d' : '3d'
+  });
+
+  return showCreator.canvasType;
+};
+
+const stopRender = async () => {
+  state.render?.stopRender();
+};
 
 function makeProxy(data) {
   proxyManager.makeProxy(data);
 }
 
+// TODO 1.使用init 2.setShowCreator
+
 const handlers = {
-  start,
+  init,
+  setShowCreator,
+  stopRender,
   makeProxy,
   event: proxyManager.handleEvent
 };

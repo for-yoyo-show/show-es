@@ -23,7 +23,7 @@ const map2D = async ({ canvas }) => {
     // but display it double size so it's not too small
     // ctx.canvas.style.width = px(ncols * 2)
     // fill the canvas to dark gray
-
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.fillStyle = '#444';
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     data.forEach((row, latNdx) => {

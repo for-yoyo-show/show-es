@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { parseData, loadFile } from '../utils/map.mjs';
+import { loatTexture } from '../utils/utils.mjs';
 
 function addBoxes(file, scene) {
   const { min, max, data } = file;
@@ -59,21 +60,20 @@ function addBoxes(file, scene) {
   });
 }
 
-const earth2Show = async ({ canvas, render }) => {
+const earth2Show = async ({ canvas, render, inputElement }) => {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('black');
 
   const camera = new THREE.PerspectiveCamera(60, 2, 0.1, 10);
   camera.position.z = 2.5;
 
-  const loader = new THREE.TextureLoader();
-  const texture = await loader.load('./public/lib/images/world.jpg');
+  const texture = await loatTexture('./public/lib/images/world.jpg');
   const geometry = new THREE.SphereGeometry(1, 64, 32);
   const material = new THREE.MeshBasicMaterial({ map: texture });
   scene.add(new THREE.Mesh(geometry, material));
 
   // 摄像头控制器
-  const controls = new OrbitControls(camera, canvas);
+  const controls = new OrbitControls(camera, inputElement);
   controls.enableDamping = true;
 
   const ascUrl = './public/lib/gpw_v4_basic_demographic_characteristics_rev10_a000_014mt_2010_cntm_1_deg.asc';
@@ -96,7 +96,6 @@ const earth2Show = async ({ canvas, render }) => {
 
   const start = () => {
     controls.addEventListener('change', requestRenderIfNotRequested);
-    window.addEventListener('resize', requestRenderIfNotRequested);
   };
 
   const update = ({ timestamp }) => {
@@ -105,7 +104,6 @@ const earth2Show = async ({ canvas, render }) => {
 
   const end = () => {
     controls.removeEventListener('change', requestRenderIfNotRequested);
-    window.removeEventListener('resize', requestRenderIfNotRequested);
   };
 
   return {
