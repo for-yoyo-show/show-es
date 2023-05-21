@@ -1,3 +1,21 @@
+import { ImageBitmapLoader, CanvasTexture } from 'three';
+
+export const loatTexture = async url => {
+  const texture = await new Promise((resolve, reject) => {
+    const loader = new ImageBitmapLoader();
+    loader.load(
+      url,
+      imageBitmap => {
+        resolve(new CanvasTexture(imageBitmap));
+      },
+      null,
+      reject
+    );
+  });
+
+  return texture;
+};
+
 export async function loadFile(url) {
   const req = await fetch(url);
   return req.text();
@@ -5,7 +23,7 @@ export async function loadFile(url) {
 
 export function parseData(text) {
   const data = [];
-  const settings = { data };
+  const settings = { data, NODATA_value: null };
   let max;
   let min;
   // split into lines

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "lib": ["webworker", "dom"],
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
@@ -18,5 +19,5 @@
     }
   },
   "include": ["./src/**/*", "type/*"],
-  "exclude": ["node_modules", "src/worker"]
+  "exclude": ["node_modules", "src/libs"]
 }
