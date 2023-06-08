@@ -60,6 +60,7 @@
     "pre-commit": "^1.2.2",
     "prettier": "^2.8.8",
     "prettier-eslint": "^15.0.1",
+    "raw-loader": "^4.0.2",
     "sass": "^1.62.1",
     "sass-loader": "^13.2.2",
     "style-loader": "^3.3.2",
@@ -67,7 +68,6 @@
     "stylelint-config-standard": "^33.0.0",
     "stylelint-config-standard-less": "^1.0.0",
     "terser-webpack-plugin": "^5.3.7",
-    "three": "^0.152.2",
     "ts-loader": "^9.4.2",
     "typescript": "^5.0.4",
     "webpack": "^5.81.0",
@@ -78,9 +78,11 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
     "antd": "^5.4.4",
+    "gl-matrix": "^3.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^6.10.0"
+    "react-router-dom": "^6.10.0",
+    "three": "^0.152.2"
   }
 }

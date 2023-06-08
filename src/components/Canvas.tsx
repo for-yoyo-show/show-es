@@ -31,11 +31,17 @@ class CanvasRenderer extends Component<Props, State> {
     }
   }
 
+  componentWillUnmount(): void {
+    if (this.canvasController) {
+      this.canvasController.destroy();
+    }
+  }
+
   render() {
     return (
       <div className="canvas-container">
         <div id="ui" className="ui" ref={this.ui}></div>
-        <canvas id="canvas" className="canvas" ref={this.canvas}></canvas>
+        <canvas id="canvas" className="canvas" ref={this.canvas} width={500} height={500}></canvas>
       </div>
     );
   }

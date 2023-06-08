@@ -37,19 +37,19 @@ const scene = (canvas, ui) => {
     gridHelper.position.y = -10;
     scene.add(gridHelper);
 
-    const ambient = new THREE.AmbientLight(0xaaaaaa, 1);
+    const ambient = new THREE.AmbientLight(0xffffff);
     scene.add(ambient);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(-1, 1, 1).normalize();
-    scene.add(directionalLight);
+    // const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    // directionalLight.position.set(0, 10, 10).normalize();
+    // scene.add(directionalLight);
 
     //
 
     renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
-
+    renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
     effect = new OutlineEffect(renderer);
 
     // STATS
@@ -66,8 +66,8 @@ const scene = (canvas, ui) => {
       }
     }
 
-    const modelFile = 'public/models/mmd/miku/miku_v2.pmd';
-    const vmdFiles = ['public/models/mmd/vmds/wavefile_v2.vmd'];
+    const modelFile = 'public/models/mmd/naxitan/naxitan.pmx';
+    const vmdFiles = ['public/models/mmd/vmds/ayaka-dance.vmd'];
 
     helper = new MMDAnimationHelper({
       afterglow: 2.0
@@ -80,6 +80,7 @@ const scene = (canvas, ui) => {
       vmdFiles,
       function (mmd) {
         mesh = mmd.mesh;
+        mesh.castShadow = true;
         mesh.position.y = -10;
         scene.add(mesh);
 

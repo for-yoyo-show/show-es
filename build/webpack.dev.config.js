@@ -3,7 +3,7 @@ const common = require('./webpack.common.config');
 
 const webpackConfig = {
   mode: 'development',
-  devtool: 'eval',
+  devtool: 'source-map',
   devServer: {
     static: common.distPath,
     historyApiFallback: true,

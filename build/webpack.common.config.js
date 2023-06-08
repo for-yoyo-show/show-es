@@ -11,6 +11,9 @@ const targetDir = 'dist';
 const staticDir = 'public';
 const distPath = path.resolve(__dirname, '../', targetDir);
 
+const srcPath = /src/;
+const modulesPath = /(node_modules|bower_components)/;
+
 const webpackConfig = {
   resolve: {
     alias: {
@@ -39,8 +42,14 @@ const webpackConfig = {
     noParse: /^jquery|^lodash|^three/,
     rules: [
       {
+        test: /\.(vert|frag)$/i,
+        use: 'raw-loader',
+        include: srcPath,
+        exclude: modulesPath
+      },
+      {
         test: /\.(j|t)sx?$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: modulesPath,
         use: {
           // 确定使用的loader
           loader: 'babel-loader',
