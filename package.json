@@ -1,5 +1,5 @@
 {
-  "name": "room-es3",
+  "name": "show-es",
   "version": "1.0.0",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack serve  --mode=development --config build/webpack.dev.config.js",
