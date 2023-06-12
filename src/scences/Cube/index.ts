@@ -159,10 +159,6 @@ function setTextureAttribute(gl, buffers, programInfo) {
 
 const scene = async (canvas: HTMLCanvasElement) => {
   const gl = canvas.getContext('webgl');
-  // const ext = gl.getExtension('WEBGL_lose_context');
-  //   if (ext) {
-  //     ext.loseContext();
-  //   }
   if (gl === null) {
     alert('Unable to initialize WebGL. Your browser or machine may not support it.');
     return;
@@ -213,7 +209,6 @@ const scene = async (canvas: HTMLCanvasElement) => {
   const pixel = new Uint8Array([0, 0, 255, 255]); // opaque blue
   gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border, srcFormat, srcType, pixel);
   const loadImageCallback = image => {
-    document.body.append(image);
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
 
