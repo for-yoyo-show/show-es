@@ -1,18 +1,23 @@
 class Controller {
-  canvas: HTMLCanvasElement;
+  container: HTMLDivElement;
   ui: HTMLDivElement;
   private _currentScence: any;
 
-  constructor(props: { canvas: HTMLCanvasElement; ui: HTMLDivElement }) {
-    this.canvas = props.canvas;
+  constructor(props: { container: HTMLDivElement; ui: HTMLDivElement }) {
+    this.container = props.container;
     this.ui = props.ui;
   }
 
   async setScence(scenceName) {
     this.filishScence();
     this.resetUi();
+    this.container.childNodes.forEach(child => this.container.removeChild(child));
+    const canvas = document.createElement('canvas');
+    this.container.appendChild(canvas);
+    this.ui.childNodes.forEach(child => this.ui.removeChild(child));
+
     const { default: scence } = await import(`@/scences/${scenceName}/index.ts`);
-    this._currentScence = await scence(this.canvas, this.ui);
+    this._currentScence = await scence(canvas, this.ui);
   }
 
   destroy() {

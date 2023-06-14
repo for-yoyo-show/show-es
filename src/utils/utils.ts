@@ -464,3 +464,17 @@ export async function loadeObj(fileUrl: string) {
     drawVerticeIndices
   };
 }
+
+export function resizeRendererToDisplaySize(canvas: HTMLCanvasElement, gl: WebGLRenderingContext) {
+  const pixelRatio = window.devicePixelRatio || 1;
+  const width = canvas.clientWidth * pixelRatio;
+  const height = canvas.clientHeight * pixelRatio;
+  const needResize = canvas.width !== width || canvas.height !== height;
+  if (needResize) {
+    gl.viewport(0, 0, width, height);
+    canvas.width = width;
+    canvas.height = height;
+  }
+
+  return needResize;
+}

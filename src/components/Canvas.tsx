@@ -11,8 +11,8 @@ interface State {
 }
 
 class CanvasRenderer extends Component<Props, State> {
-  canvas = createRef<HTMLCanvasElement>();
   ui = createRef<HTMLDivElement>();
+  container = createRef<HTMLDivElement>();
   canvasController;
 
   constructor(porps: Props) {
@@ -21,7 +21,7 @@ class CanvasRenderer extends Component<Props, State> {
 
   componentDidMount() {
     if (!this.canvasController) {
-      this.canvasController = new Controller({ canvas: this.canvas.current, ui: this.ui.current });
+      this.canvasController = new Controller({ container: this.container.current, ui: this.ui.current });
     }
   }
 
@@ -41,7 +41,7 @@ class CanvasRenderer extends Component<Props, State> {
     return (
       <div className="canvas-container">
         <div id="ui" className="ui" ref={this.ui}></div>
-        <canvas id="canvas" className="canvas" ref={this.canvas} width={500} height={500}></canvas>
+        <div id="canvas" ref={this.container}></div>
       </div>
     );
   }

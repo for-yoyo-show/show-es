@@ -1,4 +1,4 @@
-import { loadeObj } from '@/utils/utils';
+import { loadeObj, resizeRendererToDisplaySize } from '@/utils/utils';
 import { mat4 } from 'gl-matrix';
 import fsSource from './cube.frag';
 import vsSource from './cube.vert';
@@ -158,7 +158,10 @@ function setTextureAttribute(gl, buffers, programInfo) {
 }
 
 const scene = async (canvas: HTMLCanvasElement) => {
+  canvas.width = 500;
+  canvas.height = 500;
   const gl = canvas.getContext('webgl');
+  resizeRendererToDisplaySize(canvas, gl);
   if (gl === null) {
     alert('Unable to initialize WebGL. Your browser or machine may not support it.');
     return;
@@ -243,7 +246,7 @@ const scene = async (canvas: HTMLCanvasElement) => {
     now *= 0.001; // convert to seconds
     deltaTime = now - then;
     then = now;
-
+    resizeRendererToDisplaySize(canvas, gl);
     drawScene(gl, programInfo, buffers, texture, cubeRotation, obj);
     cubeRotation += deltaTime;
     if (state.running) requestAnimationFrame(render);
