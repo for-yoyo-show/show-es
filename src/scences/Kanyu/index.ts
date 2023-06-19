@@ -66,8 +66,8 @@ const scene = (canvas, ui) => {
       }
     }
 
-    const modelFile = 'public/models/mmd/naxitan/naxitan.pmx';
-    const vmdFiles = ['public/models/mmd/vmds/ayaka-dance.vmd'];
+    const modelFile = 'models/mmd/naxitan/naxitan.pmx';
+    const vmdFiles = ['models/mmd/vmds/ayaka-dance.vmd'];
 
     helper = new MMDAnimationHelper({
       afterglow: 2.0

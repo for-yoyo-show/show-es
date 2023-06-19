@@ -66,8 +66,8 @@ const scene = (canvas, ui) => {
       }
     }
 
-    const modelFile = 'public/models/mmd/miku/miku_v2.pmd';
-    const vmdFiles = ['public/models/mmd/vmds/wavefile_v2.vmd'];
+    const modelFile = 'models/mmd/miku/miku_v2.pmd';
+    const vmdFiles = ['models/mmd/vmds/wavefile_v2.vmd'];
 
     helper = new MMDAnimationHelper({
       afterglow: 2.0

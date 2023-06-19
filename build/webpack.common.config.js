@@ -126,7 +126,7 @@ const webpackConfig = {
       patterns: [
         {
           from: path.resolve(__dirname, '../', staticDir),
-          to: path.resolve(__dirname, '../', targetDir, staticDir)
+          to: path.resolve(__dirname, '../', targetDir)
         }
       ]
     }),

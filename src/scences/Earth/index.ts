@@ -228,7 +228,7 @@ const earthShow = async (canvas: HTMLCanvasElement) => {
   // 地图
   {
     const loader = new THREE.TextureLoader();
-    const texture = await loader.load('./public/lib/images/world.jpg');
+    const texture = await loader.load('lib/images/world.jpg');
     const geometry = new THREE.SphereGeometry(1, 64, 32);
     const material = new THREE.MeshBasicMaterial({ map: texture });
     scene.add(new THREE.Mesh(geometry, material));
@@ -242,13 +242,13 @@ const earthShow = async (canvas: HTMLCanvasElement) => {
     {
       name: 'men',
       hueRange: [0.7, 0.3],
-      url: './public/lib/gpw_v4_basic_demographic_characteristics_rev10_a000_014mt_2010_cntm_1_deg.asc',
+      url: 'lib/gpw_v4_basic_demographic_characteristics_rev10_a000_014mt_2010_cntm_1_deg.asc',
       file: null
     },
     {
       name: 'women',
       hueRange: [0.9, 1.1],
-      url: './public/lib/gpw_v4_basic_demographic_characteristics_rev10_a000_014ft_2010_cntm_1_deg.asc'
+      url: 'lib/gpw_v4_basic_demographic_characteristics_rev10_a000_014ft_2010_cntm_1_deg.asc'
     }
   ];
 

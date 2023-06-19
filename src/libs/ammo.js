@@ -1,5 +1,5 @@
 // This is ammo.js, a port of Bullet Physics to JavaScript. zlib licensed.
-const wasmUrl = 'public/ammo.wasm.wasm';
+const wasmUrl = 'ammo.wasm.wasm';
 
 var Ammo = (function () {
   var _scriptDir = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : undefined;

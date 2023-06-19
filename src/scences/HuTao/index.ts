@@ -16,8 +16,8 @@ const scene = canvas => {
   const helper = new MMDAnimationHelper();
 
   loader.loadWithAnimation(
-    'public/models/mmd/naxitan/naxitan.pmx', // called when the resource is loaded
-    'public/models/mmd/vmds/ayaka-dance.vmd',
+    'models/mmd/naxitan/naxitan.pmx', // called when the resource is loaded
+    'models/mmd/vmds/ayaka-dance.vmd',
     function onLoad(mmd) {
       helper.add(mmd.mesh, {
         animation: mmd.animation
@@ -26,7 +26,7 @@ const scene = canvas => {
     }
   );
 
-  loader.loadAnimation('public/models/mmd/vmds/ayaka-camera.vmd', camera, function (cameraAnimation) {
+  loader.loadAnimation('models/mmd/vmds/ayaka-camera.vmd', camera, function (cameraAnimation) {
     helper.add(camera, {
       animation: cameraAnimation as THREE.AnimationClip
     });

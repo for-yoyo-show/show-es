@@ -185,7 +185,7 @@ const scene = async (canvas: HTMLCanvasElement) => {
     }
   };
 
-  const obj = await loadeObj('public/models/obj/cube/cube.obj');
+  const obj = await loadeObj('models/obj/cube/cube.obj');
   console.log(obj);
   const buffers = {
     position: createArrayBuffer(gl, obj.drawVertices),
