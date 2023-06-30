@@ -8,9 +8,10 @@ import { OutlineEffect } from 'three/examples/jsm/effects/OutlineEffect.js';
 import { MMDLoader } from 'three/examples/jsm/loaders/MMDLoader.js';
 import { MMDAnimationHelper } from 'three/examples/jsm/animation/MMDAnimationHelper.js';
 
+import { Scence } from '@/utils/controller';
 import Ammo from '@/libs/ammo';
 
-const scene = (canvas, ui) => {
+const scene: Scence = ({ canvas, ui, loadCallback }) => {
   let stats;
 
   let mesh, camera, scene, renderer, effect;
@@ -55,6 +56,7 @@ const scene = (canvas, ui) => {
     // STATS
 
     stats = new Stats();
+    stats.dom.style.position = '';
     ui.appendChild(stats.dom);
 
     // model
@@ -79,6 +81,7 @@ const scene = (canvas, ui) => {
       modelFile,
       vmdFiles,
       function (mmd) {
+        loadCallback();
         mesh = mmd.mesh;
         mesh.position.y = -10;
         scene.add(mesh);

@@ -3,6 +3,7 @@ import TWEEN from 'three/examples/jsm/libs/tween.module.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { parseData, loadFile } from '@/utils/utils';
+import { Scence } from '@/utils/controller';
 
 function mapValues(data, fn) {
   return data.map((row, rowNdx) => {
@@ -205,7 +206,7 @@ function resizeRendererToDisplaySize(renderer) {
   return needResize;
 }
 
-const earthShow = async (canvas: HTMLCanvasElement) => {
+const earthShow: Scence = async ({ canvas, loadCallback }) => {
   const renderer = new THREE.WebGLRenderer({ canvas });
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('black');
@@ -258,6 +259,7 @@ const earthShow = async (canvas: HTMLCanvasElement) => {
       fileInfo.file = parseData(text);
     })
   );
+  loadCallback();
 
   const othersFiles = generateFiles(fileInfos);
   fileInfos.push(...othersFiles);

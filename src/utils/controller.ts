@@ -1,14 +1,26 @@
-class Controller {
+interface Props {
   container: HTMLDivElement;
   ui: HTMLDivElement;
+}
+
+export type Scence = (props: {
+  canvas: HTMLCanvasElement;
+  ui: HTMLDivElement;
+  loadCallback: (value?: unknown) => unknown;
+}) => Promise<unknown> | unknown;
+
+class Controller {
   private _currentScence: any;
 
-  constructor(props: { container: HTMLDivElement; ui: HTMLDivElement }) {
-    this.container = props.container;
-    this.ui = props.ui;
+  container: HTMLDivElement;
+  ui: HTMLDivElement;
+
+  constructor({ container, ui }: Props) {
+    this.container = container;
+    this.ui = ui;
   }
 
-  async setScence(scenceName) {
+  setScence(scenceName) {
     this.filishScence();
     this.resetUi();
     this.container.childNodes.forEach(child => this.container.removeChild(child));
@@ -16,8 +28,13 @@ class Controller {
     this.container.appendChild(canvas);
     this.ui.childNodes.forEach(child => this.ui.removeChild(child));
 
-    const { default: scence } = await import(`@/scences/${scenceName}/index.ts`);
-    this._currentScence = await scence(canvas, this.ui);
+    return new Promise((resolve, reject) => {
+      import(`@/scences/${scenceName}/index.ts`)
+        .then(async ({ default: scence }: { default: Scence }) => {
+          this._currentScence = await scence({ canvas, ui: this.ui, loadCallback: resolve });
+        })
+        .catch(reject);
+    });
   }
 
   destroy() {
@@ -27,7 +44,7 @@ class Controller {
 
   private filishScence() {
     if (this._currentScence) {
-      this._currentScence?.finish();
+      this._currentScence?.finish?.();
     }
   }
 

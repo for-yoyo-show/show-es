@@ -14,7 +14,7 @@ const Layout = ({ children }: Props) => {
   };
   return (
     <div>
-      <button onClick={() => changeTheme()}>改变主题</button>
+      {/* <button onClick={() => changeTheme()}>改变主题</button> */}
       {children}
     </div>
   );

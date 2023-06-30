@@ -1,4 +1,5 @@
 import { loadeObj, resizeRendererToDisplaySize } from '@/utils/utils';
+import { Scence } from '@/utils/controller';
 import { mat4 } from 'gl-matrix';
 import fsSource from './cube.frag';
 import vsSource from './cube.vert';
@@ -157,7 +158,7 @@ function setTextureAttribute(gl, buffers, programInfo) {
   gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
 }
 
-const scene = async (canvas: HTMLCanvasElement) => {
+const scene: Scence = async ({ canvas, loadCallback }) => {
   canvas.width = 500;
   canvas.height = 500;
   const gl = canvas.getContext('webgl');
@@ -187,6 +188,7 @@ const scene = async (canvas: HTMLCanvasElement) => {
 
   const obj = await loadeObj('models/obj/cube/cube.obj');
   console.log(obj);
+  loadCallback();
   const buffers = {
     position: createArrayBuffer(gl, obj.drawVertices),
     textureCoord: createArrayBuffer(gl, obj.drawUvs),

@@ -2,8 +2,9 @@ import * as THREE from 'three';
 import { MMDLoader } from 'three/examples/jsm/loaders/MMDLoader.js';
 import { MMDAnimationHelper } from 'three/examples/jsm/animation/MMDAnimationHelper.js';
 import Ammo from '@/libs/ammo';
+import { Scence } from '@/utils/controller';
 
-const scene = canvas => {
+const scene: Scence = ({ canvas, loadCallback }) => {
   const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
   // renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
   renderer.outputColorSpace = THREE.DisplayP3ColorSpace;
@@ -16,9 +17,10 @@ const scene = canvas => {
   const helper = new MMDAnimationHelper();
 
   loader.loadWithAnimation(
-    'models/mmd/naxitan/naxitan.pmx', // called when the resource is loaded
+    'models/mmd/hutao/hutao.pmx', // called when the resource is loaded
     'models/mmd/vmds/ayaka-dance.vmd',
     function onLoad(mmd) {
+      loadCallback();
       helper.add(mmd.mesh, {
         animation: mmd.animation
       });
