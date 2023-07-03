@@ -21,6 +21,7 @@ const Home = () => {
 
   const onClick: MenuProps['onClick'] = ({ key }) => {
     setScenceName(key);
+    setShowMenu(false);
   };
   useEffect(() => {
     if (scenceName) {
