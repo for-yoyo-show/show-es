@@ -66,7 +66,7 @@ const addLight = scene => {
   );
 };
 
-const OldBox: Scence = async ({ canvas, loadCallback }) => {
+const OldBox: Scence = async ({ canvas, loadCallback, ui }) => {
   const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
   const scene = new THREE.Scene();
@@ -84,9 +84,7 @@ const OldBox: Scence = async ({ canvas, loadCallback }) => {
   camera.lookAt(scene.position);
 
   let mixer;
-  let keyDownEvent;
-  let touchStartEvent;
-  let touchEndEvent;
+  let clickEvent;
 
   const loader = new GLTFLoader().setPath('models/glb/hovercar/');
   loader.load('scene.gltf', gltf => {
@@ -107,25 +105,25 @@ const OldBox: Scence = async ({ canvas, loadCallback }) => {
     const animations = gltf.animations;
     logDumpObject(root);
     scene.add(root);
-    keyDownEvent = e => {
-      if (e.key == 'w') {
+    let isPlaying = false;
+    clickEvent = () => {
+      if (!isPlaying) {
+        isPlaying = true;
         mixer = startAnimation(root, animations, 'Take 01');
-      }
-      if (e.key == 's') {
+      } else {
+        isPlaying = false;
         mixer?.stopAllAction();
       }
     };
-    touchStartEvent = () => {
-      mixer = startAnimation(root, animations, 'Take 01');
-    };
-    touchEndEvent = () => {
-      mixer?.stopAllAction();
-    };
+    const tip = document.createElement('span');
+    tip.innerText = '双击画布起飞！';
+    ui.appendChild(tip);
+    tip.addEventListener('click', () => {
+      ui.removeChild(tip);
+    });
 
     loadCallback();
-    window.addEventListener('touchstart', touchStartEvent);
-    window.addEventListener('touchend', touchEndEvent);
-    window.addEventListener('keydown', keyDownEvent);
+    canvas.addEventListener('dblclick', clickEvent);
   });
   const state = {
     running: true
@@ -156,9 +154,7 @@ const OldBox: Scence = async ({ canvas, loadCallback }) => {
 
   const finish = () => {
     state.running = false;
-    window.removeEventListener('keydown', keyDownEvent);
-    window.removeEventListener('touchstart', touchStartEvent);
-    window.removeEventListener('touchend', touchEndEvent);
+    canvas.removeEventListener('dblclick', clickEvent);
   };
 
   return {
