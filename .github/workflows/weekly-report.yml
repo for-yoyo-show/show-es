@@ -1,8 +1,7 @@
 name: Weekly Report
 on:
   schedule:
-    - cron: '0 6 * * 0' # At 06:00 on Sunday
-  workflow_dispatch:
+    - cron: '16 16 * * *' # At 06:00 on Sunday
 jobs:
   run:
     runs-on: ubuntu-latest
