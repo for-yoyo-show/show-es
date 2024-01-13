@@ -13,7 +13,7 @@ module.exports = {
   quoteProps: 'as-needed',
   // jsx 不使用单引号，而使用双引号
   jsxSingleQuote: false,
-  // 末尾不需要逗号
+  // 末尾不要逗号
   trailingComma: 'none',
   // 大括号内的首尾需要空格
   bracketSpacing: true,
