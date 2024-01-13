@@ -1,7 +1,7 @@
 name: Weekly Report
 on:
   schedule:
-    - cron: '14 02 * * *'
+    - cron: '35 02 * * *'
 jobs:
   run:
     runs-on: ubuntu-latest
